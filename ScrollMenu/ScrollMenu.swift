@@ -30,7 +30,7 @@ public protocol ScrollMenuDelegate{
  */
 public class ScrollMenu: UIScrollView {
     /// ScrollMenuDelegate class instance
-    var scrollMenuDelegate: ScrollMenuDelegate?
+    public var scrollMenuDelegate: ScrollMenuDelegate?
     
     // private property
     private let selectedY: CGFloat = 0
@@ -43,7 +43,7 @@ public class ScrollMenu: UIScrollView {
      menu width. default is 120pt
      when set other pt, must be more than 0
     */
-    var menuWidth: CGFloat{
+    public var menuWidth: CGFloat{
         set(newValue){
             if newValue < 0{
                 _menuWidth = 0
@@ -60,7 +60,7 @@ public class ScrollMenu: UIScrollView {
      difference between selected menu's top position and deselected menu's top position.
      default is 10pt. when set other pt, must be more than 0.
     */
-    var deselectedTopMargin: CGFloat{
+    public var deselectedTopMargin: CGFloat{
         set(newValue){
             if newValue < 0{
                 _deselectedTopMargin = 0
@@ -81,7 +81,7 @@ public class ScrollMenu: UIScrollView {
      add menu
      - parameters: menu : Menu class instance
      */
-    func addMenu(menu: Menu){
+    public func addMenu(menu: Menu){
         let menuView = MenuView(frame: CGRectZero)
         menuView.setMenu(menu)
         menuView.setDeselectedMargin(deselectedTopMargin)
@@ -91,10 +91,50 @@ public class ScrollMenu: UIScrollView {
     }
     
     /**
+     change the menu into selected state
+     */
+    public func selectIndex(index: Int){
+        guard index >= 0 && index < menus.count else{
+            return
+        }
+        
+        // deselect menu
+        if let deselectedMenu = selectedMenu{
+            let deselectedIndex = menus.indexOf(deselectedMenu)!
+            deselectIndex(deselectedIndex)
+            scrollMenuDelegate?.scrollMenuDidDeselect(index: deselectedIndex)
+        }
+        
+        let menu = menus[index]
+        selectedMenu = menu
+        scrollMenuDelegate?.scrollMenuDidSelect(index: index)
+        
+        let contentSizeW = contentSize.width
+        let selectedCenterX = CGRectGetMidX(menu.frame)
+        let halfWidth = bounds.width / 2
+        
+        let isLeftOverMiddle = (contentSizeW - selectedCenterX) - halfWidth >= 0
+        let leftSpace = selectedCenterX - halfWidth
+        let isSufficeLeftSpace = leftSpace > 0
+        
+        UIView.animateWithDuration(0.3){
+            menu.select()
+            
+            if isLeftOverMiddle{
+                let positionX = isSufficeLeftSpace ? leftSpace : 0
+                self.contentOffset = CGPoint(x: positionX, y: self.bounds.origin.y)
+            }else{
+                self.contentOffset = CGPoint(x: contentSizeW % self.bounds.width, y: self.bounds.origin.y)
+            }
+            menu.frame = CGRect(x: menu.frame.origin.x, y: 0, width: menu.bounds.width, height: menu.bounds.height)
+        }
+    }
+    
+    /**
      when select menu, execute
      - parameters: sender : must be UITapgesture class instance
     */
-    func selectMenu(sender: AnyObject){
+    internal func selectMenu(sender: AnyObject){
         guard
             let gesture = sender as? UITapGestureRecognizer,
             let menu = gesture.view as? MenuView
@@ -130,46 +170,6 @@ public class ScrollMenu: UIScrollView {
         UIView.animateWithDuration(0.3){
             menu.deselect()
             menu.frame = CGRect(x: menu.frame.origin.x, y: self.deselectedTopMargin, width: menu.bounds.width, height: menu.bounds.height)
-        }
-    }
-    
-    /**
-     change the menu into selected state
-     */
-    func selectIndex(index: Int){
-        guard index >= 0 && index < menus.count else{
-            return
-        }
-        
-        // deselect menu
-        if let deselectedMenu = selectedMenu{
-            let deselectedIndex = menus.indexOf(deselectedMenu)!
-            deselectIndex(deselectedIndex)
-            scrollMenuDelegate?.scrollMenuDidDeselect(index: deselectedIndex)
-        }
-        
-        let menu = menus[index]
-        selectedMenu = menu
-        scrollMenuDelegate?.scrollMenuDidSelect(index: index)
-        
-        let contentSizeW = contentSize.width
-        let selectedCenterX = CGRectGetMidX(menu.frame)
-        let halfWidth = bounds.width / 2
-        
-        let isLeftOverMiddle = (contentSizeW - selectedCenterX) - halfWidth >= 0
-        let leftSpace = selectedCenterX - halfWidth
-        let isSufficeLeftSpace = leftSpace > 0
-        
-        UIView.animateWithDuration(0.3){
-            menu.select()
-            
-            if isLeftOverMiddle{
-                let positionX = isSufficeLeftSpace ? leftSpace : 0
-                self.contentOffset = CGPoint(x: positionX, y: self.bounds.origin.y)
-            }else{
-                self.contentOffset = CGPoint(x: contentSizeW % self.bounds.width, y: self.bounds.origin.y)
-            }
-            menu.frame = CGRect(x: menu.frame.origin.x, y: 0, width: menu.bounds.width, height: menu.bounds.height)
         }
     }
     

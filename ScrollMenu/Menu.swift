@@ -8,24 +8,29 @@
 
 import UIKit
 
+public struct SelectedColor{
+    public let defaultColor: UIColor
+    public let selectedColor: UIColor
+}
+
 /**
  Menu
  */
 public class Menu{
     let title: String
     let defaultBarColor: UIColor
-    var selectedBarColor: UIColor
-    var defaultTitleColor: UIColor
-    var selectedTitleColor: UIColor
-    var defaultBGColor: UIColor
-    var selectedBGColor: UIColor
+    let selectedBarColor: UIColor
+    let defaultTitleColor: UIColor
+    let selectedTitleColor: UIColor
+    let defaultBGColor: UIColor
+    let selectedBGColor: UIColor
     
     /**
      initializer
      - parameters: title: menu title
      - parameters: color: menu color
     */
-    init(title: String,
+    public init(title: String,
          defaultBarColor: UIColor = UIColor.grayColor(),
          selectedBarColor: UIColor,
          defaultTitleColor: UIColor = UIColor.grayColor(),

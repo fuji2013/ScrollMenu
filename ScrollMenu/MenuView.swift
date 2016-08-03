@@ -8,30 +8,36 @@
 
 import UIKit
 
-public struct SelectedColor{
-    let defaultColor: UIColor
-    let selectedColor: UIColor
-}
-
 public class MenuView: UIView {
-    var title: String = ""{
+    public var title: String = ""{
         didSet(newValue){
             titleLabel.text = newValue
         }
     }
-    var defaultBarColor = UIColor.grayColor()
-    var selectedBarColor = UIColor.blackColor()
-    var defaultTitleColor = UIColor.grayColor()
-    var selectedTitleColor = UIColor.blackColor()
-    var defaultBGColor = UIColor(red: 234/255, green: 234/255, blue: 234/255, alpha: 1)
-    var selectedBGColor = UIColor.whiteColor()
+    public var defaultBarColor = UIColor.grayColor()
+    public var selectedBarColor = UIColor.blackColor()
+    public var defaultTitleColor = UIColor.grayColor()
+    public var selectedTitleColor = UIColor.blackColor()
+    public var defaultBGColor = UIColor(red: 234/255, green: 234/255, blue: 234/255, alpha: 1)
+    public var selectedBGColor = UIColor.whiteColor()
     
     private var deselectedMargin: CGFloat = 10
     private let margin: CGFloat = 3
     private let topLineView = UIView(frame: CGRectZero)
     private let titleLabel = UILabel(frame: CGRectZero)
     
-    func setMenu(menu: Menu){
+    /**
+     difference between selected menu's top position and deselected menu's top position.
+     default is 10pt. when set other pt, must be more than 0.
+     */
+    internal func setDeselectedMargin(margin:CGFloat){
+        self.deselectedMargin = margin
+    }
+    
+    /**
+     set property
+    */
+    internal func setMenu(menu: Menu){
         self.title = menu.title
         self.defaultBarColor = menu.defaultBarColor
         self.selectedBarColor = menu.selectedBarColor
@@ -44,7 +50,7 @@ public class MenuView: UIView {
     /**
      execute when select
     */
-    func select(){
+    internal func select(){
         topLineView.backgroundColor = selectedBarColor
         titleLabel.textColor = selectedTitleColor
         backgroundColor = selectedBGColor
@@ -54,18 +60,10 @@ public class MenuView: UIView {
      execute when deselect
      */
     
-    func deselect(){
+    internal func deselect(){
         topLineView.backgroundColor = defaultBarColor
         titleLabel.textColor = defaultTitleColor
         backgroundColor = defaultBGColor
-    }
-    
-    /**
-     difference between selected menu's top position and deselected menu's top position.
-     default is 10pt. when set other pt, must be more than 0.
-     */
-    func setDeselectedMargin(margin:CGFloat){
-        self.deselectedMargin = margin
     }
     
     private func updateViews(){
