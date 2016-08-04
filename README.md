@@ -5,6 +5,7 @@ You can save effort to make scrolling menu.
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 ![Demo](https://cloud.githubusercontent.com/assets/4578511/17367235/25c7e36e-59ca-11e6-988d-765819c878aa.gif)
+![Demo2](https://cloud.githubusercontent.com/assets/4578511/17402517/a61451dc-5a8e-11e6-972c-06bd2baabd1e.gif)
 
 ## Runtime Requirements
 
